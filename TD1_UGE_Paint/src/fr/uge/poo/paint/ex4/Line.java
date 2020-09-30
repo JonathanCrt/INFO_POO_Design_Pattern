@@ -1,4 +1,4 @@
-package fr.uge.poo.paint.ex3;
+package fr.uge.poo.paint.ex4;
 
 import java.awt.*;
 
@@ -20,6 +20,14 @@ public class Line implements Shape {
     public void draw(Graphics2D graphic2D) {
         graphic2D.setColor(Color.BLACK);
         graphic2D.drawLine(x1, y1, x2, y2);
+    }
+
+    @Override
+    public double getDistanceBetweenCenterAndClick(int x, int y) {
+
+        var middleX = (x1 + x2) / 2;
+        var middleY = (y1 + y2) / 2;
+        return Point.distance(middleX, middleY, x, y);
     }
 
     @Override

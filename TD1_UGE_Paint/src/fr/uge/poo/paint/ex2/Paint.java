@@ -10,18 +10,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-public class Reader {
+public class Paint {
 
     public static void main(String[] args) throws IOException {
-        Path path = Paths.get("src/fr/uge/poo/paint/ex2/draw1.txt");
+        Path path = Paths.get("C:/Users/jonat/Documents/GitHub/INFO_POO_Design_Pattern/TD1_UGE_Paint/src/fr/uge/poo/paint/file/draw1.txt");
         var simpleGraphics = new SimpleGraphics("figure", 800, 600);
         simpleGraphics.clear(Color.white);
         var linesList = new ArrayList<Line>();
 
-        try(Stream lines = Files.lines(path)) {
-            //lines.forEach(line -> System.out.println(line));
+        try(Stream<String> lines = Files.lines(path)) {
             lines.forEach(line -> {
-                String[] tokens = line.toString().split(" ");
+                var tokens = line.toString().split(" ");
                 int x1 = Integer.parseInt(tokens[1]);
                 int y1 = Integer.parseInt(tokens[2]);
                 int x2 = Integer.parseInt(tokens[3]);
@@ -33,7 +32,7 @@ public class Reader {
         }
 
         for(Line  l : linesList) {
-            simpleGraphics.render(graphics2D -> l.draw(graphics2D));
+            simpleGraphics.render(l::draw);
         }
     }
 }

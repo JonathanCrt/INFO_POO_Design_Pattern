@@ -1,4 +1,4 @@
-package fr.uge.poo.paint.ex4;
+package fr.uge.poo.paint.ex5;
 
 import java.awt.*;
 
@@ -16,7 +16,7 @@ abstract class AbstractShape implements Shape {
         this.height = height;
     }
 
-    public double getDistanceBetweenCenterAndClick(int x, int y) {
+    public double computeDistanceBetweenCenterAndUserClick(int x, int y) {
         var middleX = (x + width) / 2;
         var middleY = (y + height) / 2;
 
