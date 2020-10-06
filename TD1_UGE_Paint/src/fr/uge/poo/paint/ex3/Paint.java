@@ -16,7 +16,7 @@ public class Paint {
     private List<Shape> shapes = new ArrayList<>();
 
     public void parseFile(Path path) throws IOException {
-        try (Stream lines = Files.lines(path)) {
+        try (Stream<String> lines = Files.lines(path)) {
             lines.forEach(line -> {
                 String[] tokens = line.toString().split(" ");
                 int x1 = Integer.parseInt(tokens[1]);
@@ -35,7 +35,7 @@ public class Paint {
                         shapes.add(new Rectangle(x1, y1, x2, y2));
                         break;
                     default:
-                        System.out.println("This shape doesn't exist");
+                        throw new UnsupportedOperationException("This figure doesn't exists");
                 }
 
             });
@@ -44,9 +44,7 @@ public class Paint {
     }
 
     public void loopAndDraw(SimpleGraphics graphics) {
-        for (Shape shape : shapes) {
-            graphics.render(shape::draw);
-        }
+        shapes.forEach(shape -> graphics.render(shape::draw));
     }
 
     public static void main(String[] args) throws IOException {

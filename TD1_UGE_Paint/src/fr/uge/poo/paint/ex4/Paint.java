@@ -14,8 +14,8 @@ public class Paint {
 
     private static final Logger logger = Logger.getLogger(Paint.class.getName());
 
-    public static Shapes parseFile(Path path) throws IOException {
-        var shapesList = new Shapes();
+    public static ContainerShape parseFile(Path path) throws IOException {
+        var shapesList = new ContainerShape();
         try (Stream<String> lines = Files.lines(path)) {
             lines.forEach(line -> {
                 String[] tokens = line.split(" ");
@@ -35,8 +35,7 @@ public class Paint {
                         shapesList.add(new Rectangle(x1, y1, x2, y2));
                         break;
                     default:
-
-                        logger.info("This shape doesn't exist");
+                        throw new UnsupportedOperationException("This shape doesn't exist");
                 }
 
             });

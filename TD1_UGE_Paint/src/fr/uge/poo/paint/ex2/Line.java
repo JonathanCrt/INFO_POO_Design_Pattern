@@ -1,8 +1,7 @@
 package fr.uge.poo.paint.ex2;
 
-import fr.uge.poo.simplegraphics.SimpleGraphics;
-
 import java.awt.*;
+import java.util.Objects;
 
 public class Line {
 
@@ -19,8 +18,9 @@ public class Line {
     }
 
     public void draw(Graphics2D graphics) {
+        Objects.requireNonNull(graphics);
         graphics.setColor(Color.BLACK);
-        graphics.drawLine(x0, x1, y0, y1);
+        graphics.drawLine(x0, y0, x1, y1);
     }
 
     @Override

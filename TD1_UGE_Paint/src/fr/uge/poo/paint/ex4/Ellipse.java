@@ -1,6 +1,7 @@
 package fr.uge.poo.paint.ex4;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Ellipse extends AbstractShape {
 
@@ -10,6 +11,7 @@ public class Ellipse extends AbstractShape {
 
     @Override
     public void draw(Graphics2D graphics2D) {
+        Objects.requireNonNull(graphics2D);
         graphics2D.setColor(Color.BLACK);
         graphics2D.drawOval(x, y, width, height);
     }

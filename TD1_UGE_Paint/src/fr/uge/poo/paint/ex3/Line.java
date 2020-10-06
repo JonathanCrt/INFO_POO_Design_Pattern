@@ -1,13 +1,14 @@
 package fr.uge.poo.paint.ex3;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Line implements Shape {
 
-    int x1;
-    int x2;
-    int y1;
-    int y2;
+    private final int x1;
+    private final int x2;
+    private final int y1;
+    private final int y2;
 
     public Line(int x1, int x2, int y1, int y2) {
         this.x1 = x1;
@@ -18,6 +19,7 @@ public class Line implements Shape {
 
     @Override
     public void draw(Graphics2D graphic2D) {
+        Objects.requireNonNull(graphic2D);
         graphic2D.setColor(Color.BLACK);
         graphic2D.drawLine(x1, y1, x2, y2);
     }

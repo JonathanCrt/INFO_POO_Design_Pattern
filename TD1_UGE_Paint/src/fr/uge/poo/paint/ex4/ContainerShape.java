@@ -2,17 +2,15 @@ package fr.uge.poo.paint.ex4;
 
 import fr.uge.poo.simplegraphics.SimpleGraphics;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 /*
     On encapsule la listes des figures dans cette classes pour déléguer
  */
-public class Shapes {
+public class ContainerShape {
     private List<Shape> shapeList;
-
-    public Shapes() {
+    public ContainerShape() {
         this.shapeList = new ArrayList<>();
     }
 
@@ -30,7 +28,7 @@ public class Shapes {
     public Optional<Shape> findMinShapeFromDistance(int x, int y) {
         return shapeList
                 .stream()
-                .min(Comparator.comparingDouble(shape -> shape.getDistanceBetweenCenterAndClick(x, y)));
+                .min(Comparator.comparingDouble(shape -> shape.computeDistanceBetweenCenterAndUserClick(x, y)));
     }
 
 }

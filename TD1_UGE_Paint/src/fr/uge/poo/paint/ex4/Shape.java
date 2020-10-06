@@ -4,6 +4,5 @@ import java.awt.*;
 
 public interface Shape {
     void draw(Graphics2D graphics2D);
-
-    double getDistanceBetweenCenterAndClick(int x, int y);
+    double computeDistanceBetweenCenterAndUserClick(int x, int y);
 }

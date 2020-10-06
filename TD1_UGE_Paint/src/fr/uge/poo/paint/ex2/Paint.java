@@ -20,7 +20,7 @@ public class Paint {
 
         try(Stream<String> lines = Files.lines(path)) {
             lines.forEach(line -> {
-                var tokens = line.toString().split(" ");
+                var tokens = line.split(" ");
                 int x1 = Integer.parseInt(tokens[1]);
                 int y1 = Integer.parseInt(tokens[2]);
                 int x2 = Integer.parseInt(tokens[3]);
@@ -30,9 +30,6 @@ public class Paint {
                 linesList.add(extractedLine);
             });
         }
-
-        for(Line  l : linesList) {
-            simpleGraphics.render(l::draw);
-        }
+        linesList.forEach(line -> simpleGraphics.render(line::draw));
     }
 }
