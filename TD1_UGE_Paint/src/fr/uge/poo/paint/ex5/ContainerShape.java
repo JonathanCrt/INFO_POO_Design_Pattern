@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 public class ContainerShape {
     private List<Shape> shapeList;
 
+    private Shape selectedShape;
 
     private ContainerShape() {
         this.shapeList = new ArrayList<>();
@@ -69,6 +70,9 @@ public class ContainerShape {
         Objects.requireNonNull(color);
         Objects.requireNonNull(area);
         var optionalShape = findMinShapeFromDistance(x, y);
-        optionalShape.ifPresent(shape -> area.render(graphics2D -> shape.draw(graphics2D, color)));
+        optionalShape.ifPresent(shape -> {
+            this.selectedShape = shape;
+            area.render(graphics2D -> shape.draw(graphics2D, color));
+        });
     }
 }

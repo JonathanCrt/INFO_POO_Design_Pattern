@@ -1,9 +1,7 @@
 package fr.uge.poo.paint.ex7;
 
-import java.awt.*;
-
 public interface Shape {
-    void draw(Graphics2D graphics2D, Color color);
+    void draw(Canvas canvas, EColor color);
 
     double computeDistanceBetweenCenterAndUserClick(int x, int y);
 

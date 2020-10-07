@@ -1,5 +1,6 @@
 package fr.uge.poo.paint.ex7;
 
+
 import java.awt.*;
 
 public class Line implements Shape {
@@ -17,9 +18,8 @@ public class Line implements Shape {
     }
 
     @Override
-    public void draw(Graphics2D graphic2D, Color color) {
-        graphic2D.setColor(color);
-        graphic2D.drawLine(x1, y1, x2, y2);
+    public void draw(Canvas canvas, EColor color) {
+        canvas.drawLine(x1, y1, x2, y2, color);
     }
 
     @Override

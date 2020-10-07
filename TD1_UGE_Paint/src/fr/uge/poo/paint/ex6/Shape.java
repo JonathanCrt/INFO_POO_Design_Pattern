@@ -7,7 +7,7 @@ public interface Shape {
 
     double computeDistanceBetweenCenterAndUserClick(int x, int y);
 
-    //double minWidth();
+    int minWidth();
 
-    //double minHeight();
+    int minHeight();
 }

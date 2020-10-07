@@ -1,7 +1,5 @@
 package fr.uge.poo.paint.ex7;
 
-import java.awt.*;
-
 public class Rectangle extends AbstractShape {
 
     public Rectangle(int x, int y, int width, int height) {
@@ -9,9 +7,8 @@ public class Rectangle extends AbstractShape {
     }
 
     @Override
-    public void draw(Graphics2D graphics2D, Color color) {
-        graphics2D.setColor(color);
-        graphics2D.drawRect(x, y, width, height);
+    public void draw(Canvas canvas, EColor color) {
+        canvas.drawRectangle(x, y, width, height, color);
     }
 
     @Override

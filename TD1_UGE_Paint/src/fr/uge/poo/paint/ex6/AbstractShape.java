@@ -29,4 +29,15 @@ abstract class AbstractShape implements Shape {
         return Point.distance(middleX, middleY, x, y);
     }
 
+    @Override
+    public int minWidth() {
+        return width;
+    }
+
+    @Override
+    public int minHeight() {
+        return height;
+    }
+
+
 }

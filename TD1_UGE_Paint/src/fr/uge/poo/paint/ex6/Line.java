@@ -31,6 +31,16 @@ public class Line implements Shape {
     }
 
     @Override
+    public int minWidth() {
+        return x1;
+    }
+
+    @Override
+    public int minHeight() {
+        return y1;
+    }
+
+    @Override
     public String toString() {
         return "Line{" +
                 "x1=" + x1 +
