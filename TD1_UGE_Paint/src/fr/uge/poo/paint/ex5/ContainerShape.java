@@ -66,12 +66,17 @@ public class ContainerShape {
                 .min(Comparator.comparingDouble(shape -> shape.computeDistanceBetweenCenterAndUserClick(x, y)));
     }
 
+    public void setSelected(Shape shape) {
+        Objects.requireNonNull(shape);
+        this.selectedShape = shape;
+    }
+
     public void changeColor(int x, int y, Color color, SimpleGraphics area) {
         Objects.requireNonNull(color);
         Objects.requireNonNull(area);
         var optionalShape = findMinShapeFromDistance(x, y);
         optionalShape.ifPresent(shape -> {
-            this.selectedShape = shape;
+            this.setSelected(shape);
             area.render(graphics2D -> shape.draw(graphics2D, color));
         });
     }
