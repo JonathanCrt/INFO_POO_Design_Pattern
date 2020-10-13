@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 build_dir="./tmp_build"
 src_dir="./src"
 jarname="CoolGraphicsCanvasFactory.jar"
-interface_provided="fr.uge.poo.paint.ex8.Canvas"
-class_providing_the_interface="fr.uge.poo.paint.ex8.CoolGraphicsAdapter"
-included_classes=("com.evilcorp.coolgraphics.Coolgraphics"
-	"fr.uge.poo.paint.ex8.CoolGraphicsAdapter" "$class_providing_the_interface")
+interface_provided="fr.uge.poo.paint.ex8.CanvasFactory"
+class_providing_the_interface="fr.uge.poo.paint.ex8.CoolGraphicsAdapterFactory"
+included_classes=("com.evilcorp.coolgraphics.CoolGraphics" "fr.uge.poo.paint.ex8.Canvas"
+	"fr.uge.poo.paint.ex8.CanvasFactory" "$class_providing_the_interface")
 
 
 #Option to create a jar compatible with older versions of java

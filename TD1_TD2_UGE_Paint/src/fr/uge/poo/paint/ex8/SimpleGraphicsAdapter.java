@@ -6,15 +6,11 @@ import java.awt.*;
 
 public class SimpleGraphicsAdapter implements Canvas {
 
-    private final int widthWindow;
-    private final int heightWindow;
     private final SimpleGraphics simpleGraphics;
 
 
     public SimpleGraphicsAdapter(int widthWindow, int heightWindow) {
-        this.widthWindow = widthWindow;
-        this.heightWindow = heightWindow;
-        this.simpleGraphics = new SimpleGraphics("Area", this.widthWindow, this.heightWindow);
+        this.simpleGraphics = new SimpleGraphics("Area with SimpleGraphics", widthWindow, heightWindow);
     }
 
     @Override
