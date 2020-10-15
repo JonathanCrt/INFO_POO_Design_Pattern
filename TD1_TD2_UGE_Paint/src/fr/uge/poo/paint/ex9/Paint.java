@@ -1,10 +1,8 @@
-package fr.uge.poo.paint.ex8;
-
+package fr.uge.poo.paint.ex9;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ServiceLoader;
 
 /**
  * Si on stocke la couleur pour chaque figure dans un champ, et que l'on souhaite la modifier (noir -> orrange)
@@ -13,16 +11,20 @@ import java.util.ServiceLoader;
 public class Paint {
 
     public static void main(String[] args) throws IOException {
+
+        if (args.length < 1) {
+            System.out.println("Usage : java Paint -legacy");
+            return;
+        }
+
         Path path = Paths.get(args[0]);
         var shapesList = ContainerShape.from(path);
 
-        ServiceLoader<CanvasFactory> loaderCanvasFactory = ServiceLoader.load(fr.uge.poo.paint.ex8.CanvasFactory.class);
-        var canvas = loaderCanvasFactory.findFirst()
-                .map(shape -> shape.createCanvas(800,800))
-                .orElseGet(()-> new SimpleGraphicsAdapter(800, 800));
 
+        var canvas = args.length == 2 && args[1].equals("-legacy") ? new SimpleGraphicsAdapter(800, 800) : new CoolGraphicsAdapter(800, 800);
         canvas.clear(EColor.WHITE);
         shapesList.loopAndDraw(canvas, EColor.BLACK);
+        canvas.render();
         canvas.waitOnClick((x, y) -> shapesList.changeColor(x, y, EColor.ORANGE, canvas));
 
     }
