@@ -4,13 +4,9 @@ import com.evilcorp.coolgraphics.CoolGraphics;
 
 public class CoolGraphicsAdapter implements Canvas {
 
-    private final int widthWindow;
-    private final int heightWindow;
     private final CoolGraphics coolGraphics;
 
     public CoolGraphicsAdapter(int widthWindow, int heightWindow) {
-        this.widthWindow = widthWindow;
-        this.heightWindow = heightWindow;
         this.coolGraphics = new CoolGraphics("Area", widthWindow, heightWindow);
     }
 

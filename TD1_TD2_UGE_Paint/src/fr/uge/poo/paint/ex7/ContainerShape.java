@@ -11,7 +11,7 @@ import java.util.stream.Stream;
     On encapsule la listes des figures dans cette classes pour déléguer
 */
 public class ContainerShape {
-    private List<Shape> shapeList;
+    private final List<Shape> shapeList;
 
     private Shape selectedShape;
 
