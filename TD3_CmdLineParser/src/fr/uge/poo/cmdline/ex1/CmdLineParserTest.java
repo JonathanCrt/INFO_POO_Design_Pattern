@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("static-method")
 public class CmdLineParserTest {
 
+    /******************************** Exercise 1 ***********************************/
+
     @Test
     public void processShouldFailFastOnNullArgument() {
         var parser = new CmdLineParser();

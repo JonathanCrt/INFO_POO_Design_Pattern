@@ -8,6 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("static-method")
 public class CmdLineParserTest {
 
+    /******************************** Exercise 1 ***********************************/
+
+
     @Test
     public void processShouldFailFastOnNullArgument() {
         var parser = new CmdLineParser();
@@ -102,6 +105,82 @@ public class CmdLineParserTest {
                         .toString(), "filename2")
         );
     }
-    
+
+
+    /******************************** Exercise 2 ***********************************/
+
+
+    @Test
+    public void shouldThrowsNullPointerIfNullConsumer() {
+        var cmdParser = new CmdLineParser();
+        assertThrows(NullPointerException.class, () -> cmdParser.registerWithParameter("window-name", null));
+    }
+
+    @Test
+    public void shouldThrowsNullPointerIfNullOptionName() {
+        var cmdParser = new CmdLineParser();
+        assertThrows(NullPointerException.class, () -> cmdParser.registerWithParameter(null, code -> {
+        }));
+    }
+
+
+    @Test
+    public void checkRegisterOptionParametersValue() {
+        var options = new Application.PaintOptions();
+        String[] arguments = {"-legacy", "-no-borders", "-border-width", "500", "-windows-name", "Area", "filename1", "filename2"};
+        var cmdParser = new CmdLineParser();
+        cmdParser.registerWithParameter("-border-width", size -> options.setBorderWidth(Integer.parseInt(size)));
+        cmdParser.registerWithParameter("-windows-name", options::setWindowName);
+        cmdParser.process(arguments);
+
+        assertAll(
+                () -> assertEquals(500, options.getBorderWidth()),
+                () -> assertEquals("Area", options.getWindowName())
+        );
+
+    }
+
+    @Test
+    public void shouldThrowsExceptionIfRegisterTwiceOptionWithArguments() {
+        var options = new Application.PaintOptions();
+        var cmdLineParser = new CmdLineParser();
+        assertThrows(IllegalStateException.class, () -> {
+            cmdLineParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
+            cmdLineParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
+        });
+    }
+
+    @Test
+    public void checkRegisterWithAndWithoutParameter() {
+        var options = new Application.PaintOptions();
+        var cmdParser = new CmdLineParser();
+        String[] arguments = {"-legacy", "-window-name", "Area", "filename1", "filename2", "-border-width", "800"};
+
+        cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
+        cmdParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
+        cmdParser.registerWithParameter("-window-name", options::setWindowName);
+
+        var files = cmdParser.process(arguments);
+
+        assertAll(
+                () -> assertEquals(800, options.getBorderWidth()),
+                () -> assertEquals("Area", options.getWindowName()),
+                () -> assertEquals(2, files.size()),
+                () -> assertTrue(options.isLegacy())
+        );
+    }
+
+    @Test
+    public void shouldThrowsIllegalStateExceptionIfBadRegisterWithoutParameter() {
+        var options = new Application.PaintOptions();
+        var cmdLineParser = new CmdLineParser();
+        String[] arguments = {"-legacy", "filename1", "filename2", "-window-name"};
+
+        cmdLineParser.registerOption("-legacy", () -> options.setLegacy(true));
+        cmdLineParser.registerWithParameter("-window-name", options::setWindowName);
+
+        assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
+    }
+
 
 }
