@@ -4,4 +4,5 @@ public interface DuckFactory {
 
     Duck withName(String name);
 
+    void setName(String name);
 }

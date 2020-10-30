@@ -3,22 +3,21 @@ package fr.uge.poo.paint.ex9;
 import fr.uge.poo.simplegraphics.SimpleGraphics;
 
 import java.awt.*;
-import java.util.ArrayDeque;
 import java.util.function.Consumer;
 
-public class SimpleGraphicsAdapter implements Canvas {
+public class SimpleGraphicsAdapterWithoutListOfConsumer implements Canvas {
+    private Consumer<Graphics2D> graphics2DConsumer;
 
-    private final ArrayDeque<Consumer<Graphics2D>> buffer = new ArrayDeque<>();
     private final SimpleGraphics simpleGraphics;
 
-    public SimpleGraphicsAdapter(int widthWindow, int heightWindow) {
-        this.simpleGraphics = new SimpleGraphics("Area with SimpleGraphics", widthWindow, heightWindow);
+    public SimpleGraphicsAdapterWithoutListOfConsumer(int widthWindow, int heightWindow) {
+        this.simpleGraphics = new SimpleGraphics("Area with SimpleGraphicsAdapterWithoutListOfConsumer", widthWindow, heightWindow);
+        this.graphics2DConsumer = graphics2D -> {};
     }
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2, EColor color) {
-        // we store action of draw
-        this.buffer.add(graphics2D -> {
+        this.graphics2DConsumer = graphics2DConsumer.andThen(graphics2D -> {
             graphics2D.setColor(selectedColor(color));
             graphics2D.drawLine(x1, y1, x2, y2);
         });
@@ -26,7 +25,7 @@ public class SimpleGraphicsAdapter implements Canvas {
 
     @Override
     public void drawRectangle(int x, int y, int width, int height, EColor color) {
-        this.buffer.add(graphics2D -> {
+        this.graphics2DConsumer = graphics2DConsumer.andThen(graphics2D -> {
             graphics2D.setColor(selectedColor(color));
             graphics2D.drawRect(x, y, width, height);
         });
@@ -34,7 +33,7 @@ public class SimpleGraphicsAdapter implements Canvas {
 
     @Override
     public void drawEllipse(int x, int y, int width, int height, EColor color) {
-        this.buffer.add(graphics2D -> {
+        this.graphics2DConsumer = graphics2DConsumer.andThen(graphics2D -> {
             graphics2D.setColor(selectedColor(color));
             graphics2D.drawOval(x, y, width, height);
         });
@@ -60,11 +59,9 @@ public class SimpleGraphicsAdapter implements Canvas {
 
     @Override
     public void paint() {
-        this.simpleGraphics.render(graphics2D -> {
-            var copyBuffer = this.buffer.clone();
-            while (!copyBuffer.isEmpty()) {
-                copyBuffer.pop().accept(graphics2D);
-            }
+        this.simpleGraphics.render(graphics2D ->  {
+            this.graphics2DConsumer.accept(graphics2D);
+            this.graphics2DConsumer = graphic -> {};
         });
     }
 }

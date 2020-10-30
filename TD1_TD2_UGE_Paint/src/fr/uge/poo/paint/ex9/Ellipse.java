@@ -13,11 +13,10 @@ public class Ellipse extends AbstractShape {
 
     @Override
     public String toString() {
-        return "Ellipse{" +
-                "x=" + x +
-                ", y=" + y +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
+        return "ellipse" +
+                " " + x +
+                " " + y +
+                " " + width +
+                " " + height;
     }
 }

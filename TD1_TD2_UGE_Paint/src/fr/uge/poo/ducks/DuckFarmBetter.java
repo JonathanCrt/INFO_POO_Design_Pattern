@@ -13,7 +13,15 @@ public class DuckFarmBetter {
             System.out.println(duckFactory.withName("Loulou").quack());
         }
 
+        /******* Without factory **********/
+        ServiceLoader<Duck> loaderDuck = ServiceLoader.load(fr.uge.poo.ducks.Duck.class);
+        String[] namesOfDucks = {"Riri", "Fifi", "Loulou"};
+        var i = 0;
+        for (var duck : loaderDuck) {
+            duck.setName(namesOfDucks[i]);
+            i++;
+            System.out.println(duck.quack());
+        }
     }
-
 
 }

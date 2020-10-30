@@ -20,12 +20,10 @@ public class Paint {
         Path path = Paths.get(args[0]);
         var shapesList = ContainerShape.from(path);
 
-
-        var canvas = args.length == 2 && args[1].equals("-legacy") ? new SimpleGraphicsAdapter(800, 800) : new CoolGraphicsAdapter(800, 800);
+        var canvas = args.length == 2 && args[1].equals("-legacy") ? new SimpleGraphicsAdapterWithoutListOfConsumer(800, 800) : new CoolGraphicsAdapter(800, 800);
         canvas.clear(EColor.WHITE);
         shapesList.loopAndDraw(canvas, EColor.BLACK);
-        canvas.render();
+        canvas.paint();
         canvas.waitOnClick((x, y) -> shapesList.changeColor(x, y, EColor.ORANGE, canvas));
-
     }
 }

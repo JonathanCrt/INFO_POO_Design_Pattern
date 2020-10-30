@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 
 public class CoolGraphicsAdapter implements Canvas {
 
-    private final ArrayDeque<Runnable> consumerQueue = new ArrayDeque<>();
+    private final ArrayDeque<Runnable> buffer = new ArrayDeque<>();
     private final CoolGraphics coolGraphics;
 
     public CoolGraphicsAdapter(int widthWindow, int heightWindow) {
@@ -24,12 +24,12 @@ public class CoolGraphicsAdapter implements Canvas {
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2, EColor color) {
-        this.consumerQueue.add(() -> this.coolGraphics.drawLine(x1, y1, x2, y2, this.selectedColor(color)));
+        this.buffer.add(() -> this.coolGraphics.drawLine(x1, y1, x2, y2, this.selectedColor(color)));
     }
 
     @Override
     public void drawRectangle(int x, int y, int width, int height, EColor color) {
-        this.consumerQueue.add(() -> {
+        this.buffer.add(() -> {
             this.coolGraphics.drawLine(x, y, x + width, y, this.selectedColor(color));
             this.coolGraphics.drawLine(x, y, x, y + height, this.selectedColor(color));
             this.coolGraphics.drawLine(x + width, y, x + width, y + height, this.selectedColor(color));
@@ -39,7 +39,7 @@ public class CoolGraphicsAdapter implements Canvas {
 
     @Override
     public void drawEllipse(int x, int y, int width, int height, EColor color) {
-        this.consumerQueue.add(() -> this.coolGraphics.drawEllipse(x, y, width, height, selectedColor(color)));
+        this.buffer.add(() -> this.coolGraphics.drawEllipse(x, y, width, height, selectedColor(color)));
     }
 
     @Override
@@ -53,9 +53,10 @@ public class CoolGraphicsAdapter implements Canvas {
     }
 
     @Override
-    public void render() {
-        while (!this.consumerQueue.isEmpty()) {
-            this.consumerQueue.pop().run();
+    public void paint() {
+        var copyBuffer = this.buffer.clone();
+        while (!copyBuffer.isEmpty()) {
+            copyBuffer.pop().run();
         }
     }
 }
