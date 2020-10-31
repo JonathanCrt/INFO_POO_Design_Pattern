@@ -13,10 +13,6 @@ public class Rectangle extends AbstractShape {
 
     @Override
     public String toString() {
-        return "rectangle" +
-                " " + x +
-                " " + y +
-                " " + width +
-                " " + height;
+        return getShapeType() + getCoords();
     }
 }

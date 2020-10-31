@@ -29,4 +29,12 @@ abstract class AbstractShape implements Shape {
         return Point.distance(middleX, middleY, x, y);
     }
 
+    public String getShapeType() {
+        return getClass().getSimpleName().toLowerCase() + " ";
+    }
+
+    public String getCoords() {
+        return x + " " + y + "" + width + " " + height;
+    }
+
 }
