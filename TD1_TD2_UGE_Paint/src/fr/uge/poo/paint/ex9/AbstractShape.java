@@ -34,7 +34,7 @@ abstract class AbstractShape implements Shape {
     }
 
     public String getCoords() {
-        return x + " " + y + "" + width + " " + height;
+        return x + " " + y + " " + width + " " + height;
     }
 
 }

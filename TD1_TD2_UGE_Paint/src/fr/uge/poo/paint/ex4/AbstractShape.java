@@ -4,10 +4,10 @@ import java.awt.*;
 
 abstract class AbstractShape implements Shape {
 
-    protected int x;
-    protected int y;
-    protected int width;
-    protected int height;
+    int x;
+    int y;
+    int width;
+    int height;
 
     public AbstractShape(int x, int y, int width, int height) {
         this.x = x;
