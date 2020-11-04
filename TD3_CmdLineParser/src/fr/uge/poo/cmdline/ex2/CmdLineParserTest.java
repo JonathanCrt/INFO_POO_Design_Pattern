@@ -154,7 +154,7 @@ public class CmdLineParserTest {
     public void checkRegisterWithAndWithoutParameter() {
         var options = new Application.PaintOptions();
         var cmdParser = new CmdLineParser();
-        String[] arguments = {"-legacy", "-window-name", "Area", "filename1", "filename2", "-border-width", "800"};
+        String[] arguments = {"-legacy", "-window-name", "Area", "draw1.txt", "draw2.txt", "-border-width", "800"};
 
         cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
         cmdParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
@@ -171,6 +171,16 @@ public class CmdLineParserTest {
     }
 
     @Test
+    public void checkRegisterWithWindowNameValue() {
+        var cmdLineParser = new CmdLineParser();
+        var paint = new Application.PaintOptions();
+        String[] args  = {"-window-name", "Area", "draw1.txt", "draw2.txt"};
+        cmdLineParser.registerWithParameter("-window-name", paint::setWindowName);
+        cmdLineParser.process(args);
+        assertEquals("Area", paint.getWindowName());
+    }
+
+    @Test
     public void shouldThrowsIllegalStateExceptionIfBadRegisterWithoutParameter() {
         var options = new Application.PaintOptions();
         var cmdLineParser = new CmdLineParser();
@@ -182,5 +192,20 @@ public class CmdLineParserTest {
         assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
     }
 
+    @Test
+    public void checkFileNameWhenRegisterWithParameter() {
+        var cmdLineParser = new CmdLineParser();
+        var paintOptions = new Application.PaintOptions();
+        String[] args = {"-legacy", "-window-name", "Area", "draw1.txt", "draw2.txt", "-border-width", "250"};
+        cmdLineParser.registerOption("-legacy", () -> paintOptions.setLegacy(true));
+        cmdLineParser.registerWithParameter("-border-width", width -> paintOptions.setBorderWidth(Integer.parseInt(width)));
+        cmdLineParser.registerWithParameter("-window-name", paintOptions::setWindowName);
 
+        var listOfFiles = cmdLineParser.process(args);
+        assertAll(
+                () -> assertEquals("draw1.txt", listOfFiles.get(0).getFileName().toString()),
+                () -> assertEquals(2, listOfFiles.size()),
+                () -> assertEquals("draw2.txt", listOfFiles.get(1).getFileName().toString())
+        );
+    }
 }
