@@ -2,83 +2,81 @@ package fr.uge.poo.cmdline.ex4;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-/**
- * we need to store Iterator<String> into unique map
- * on itére sur tous les arguments du tableau
- * pas de type commun entre Runnable et Consumer (abstrait interface fonctionelle)
- */
 public class CmdLineParser {
 
-    private final HashMap<String, Consumer<Iterator<String>>> registeredOptionsWithParameterUniqueMap = new HashMap<>();
+    private final HashMap<String, Option> registeredOptionsWithParameterUniqueMap = new HashMap<>();
 
-    public void registerOption(String option, Runnable code) {
-        checkIfArgumentsAreNull(option, code);
-        if (registeredOptionsWithParameterUniqueMap.containsKey(option)) {
-            throw new IllegalStateException(option + " already exists");
+    private final Set<String> processedOptionsSet = new HashSet<>();
+
+
+    public void registerOption(Option option) {
+        checkIfArgumentsAreNull(option);
+        if (registeredOptionsWithParameterUniqueMap.get(option.name) != null) {
+            throw new IllegalStateException("Argument already exists");
         }
-        registeredOptionsWithParameterUniqueMap.put(option, __ -> code.run()); // __ -> on se fiche du paramètre
-    }
-
-    /**
-     * void method
-     * register an option with given parameter
-     *
-     * @param optionName name of option
-     * @param code       action to do
-     */
-    public void registerWithParameter(String optionName, Consumer<String> code) {
-        checkIfArgumentsAreNull(optionName, code);
-        if (registeredOptionsWithParameterUniqueMap.containsKey(optionName)) {
-            throw new IllegalStateException(optionName + "already exists");
-        }
-        registeredOptionsWithParameterUniqueMap.put(optionName, stringIterator -> {
-            if (!stringIterator.hasNext()) {
-                throw new IllegalStateException("Missing option argument");
-            }
-            code.accept(stringIterator.next());
-        });
-
-        //this.registeredOptionsWithParameters.put(optionName, arg);
+        registeredOptionsWithParameterUniqueMap.put(option.name, option);
     }
 
 
-    public List<Path> process(String[] argumentsLineCommand) {
+    public List<Path> process(String[] argumentsLineCommand) throws ProcessException {
         checkIfArgumentsAreNull(argumentsLineCommand);
         var paths = new ArrayList<Path>();
-
-
-        Iterator<String> iterator = Arrays
-                .stream(argumentsLineCommand)
-                .iterator();
+        var iterator = Arrays.stream(argumentsLineCommand).iterator();
 
         while (iterator.hasNext()) {
-            var nextOptionName = iterator.next(); // map key
-            var mapConsumerValue = this.registeredOptionsWithParameterUniqueMap.get(nextOptionName);
-            if (mapConsumerValue == null) { // if null , is name of file
-                paths.add(Path.of(nextOptionName));
-            } else {
-                mapConsumerValue.accept(iterator); // execute le code du consumeur
+            var value = iterator.next(); // map key
+            if (!value.startsWith("-")) { //  can be name file or argument of option
+                paths.add(Path.of(value));
+                continue;
             }
+
+            var currentOption = registeredOptionsWithParameterUniqueMap.get(value);
+            if (currentOption == null) {
+                throw new IllegalStateException("Error this option doesn't exist");
+            }
+
+            // get arguments of one option
+            var optionArguments = IntStream
+                    .range(0, currentOption.numberArguments)
+                    .mapToObj(arg -> iterator.next()) // mapToObj more specific
+                    .collect(Collectors.toList());
+
+            currentOption.acListConsumer.accept(optionArguments);
+            this.processedOptionsSet.add(currentOption.name);
         }
+
         /*
-        for (var i = 0; i < arguments.length; i++) {
-            if (registeredOptions.containsKey(arguments[i])) {
-                registeredOptions
-                        .get(arguments[i])
-                        .run();
-            } else if (registeredOptionsWithParameters.containsKey(arguments[i])) {
-                if(arguments.length < i+1) {
-                    throw new IllegalStateException("Error : Missing parameter of option");
-                }
-                registeredOptionsWithParameters.get(arguments[i]).accept(arguments[i + 1]);
-                i++;// skipper l'args recupérer
-            } else {
-                paths.add(Path.of(arguments[i]));
+           var mandatoryOptionsSet = new HashSet<String>();
+           for(var option: registeredOptionsWithParameterUniqueMap.values()) {
+               if(option.isMandatory) {
+                   this.mandatoryOptionsSet.add(option.name);
+               }
+           }
+        */
+
+        // get all options which are mandatory, more elegant with stream
+        var mandatoryOptionsSet = registeredOptionsWithParameterUniqueMap
+                .values()
+                .stream()
+                .filter(option -> option.isMandatory)
+                .map(option -> option.name)
+                .collect(Collectors.toSet()); // Stream<Option> -> Stream<Option.Name>
+
+        var causesExceptionList = new ArrayList<String>();
+        for (var cause : mandatoryOptionsSet) {
+            if (!processedOptionsSet.contains(cause)) {
+                causesExceptionList.add(cause);
             }
         }
-         */
+
+        // if list is not empty we have causes of exception during process
+        if (!causesExceptionList.isEmpty()) {
+            throw new ProcessException(causesExceptionList);
+        }
+
         return paths;
 
     }

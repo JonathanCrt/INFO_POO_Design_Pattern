@@ -39,12 +39,10 @@ public class CmdLineParser {
             }
             code.accept(stringIterator.next());
         });
-
-        //this.registeredOptionsWithParameters.put(optionName, arg);
     }
 
 
-    public List<Path> process(String[] argumentsLineCommand) {
+    public List<Path> process(String...argumentsLineCommand) {
         checkIfArgumentsAreNull(argumentsLineCommand);
         var paths = new ArrayList<Path>();
 
@@ -62,23 +60,6 @@ public class CmdLineParser {
                 mapConsumerValue.accept(iterator); // execute le code du consumeur
             }
         }
-        /*
-        for (var i = 0; i < arguments.length; i++) {
-            if (registeredOptions.containsKey(arguments[i])) {
-                registeredOptions
-                        .get(arguments[i])
-                        .run();
-            } else if (registeredOptionsWithParameters.containsKey(arguments[i])) {
-                if(arguments.length < i+1) {
-                    throw new IllegalStateException("Error : Missing parameter of option");
-                }
-                registeredOptionsWithParameters.get(arguments[i]).accept(arguments[i + 1]);
-                i++;// skipper l'args recupérer
-            } else {
-                paths.add(Path.of(arguments[i]));
-            }
-        }
-         */
         return paths;
 
     }

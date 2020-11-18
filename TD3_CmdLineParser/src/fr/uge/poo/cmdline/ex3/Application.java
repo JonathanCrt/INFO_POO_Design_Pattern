@@ -3,7 +3,7 @@ package fr.uge.poo.cmdline.ex3;
 public class Application {
 
     public static void main(String[] args) {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var optionsBuilder = new PaintOptions.PaintOptionsBuilder();
         String[] arguments = {"-legacy", "-no-borders", "-border-width", "500", "filename1", "filename2"};
         var cmdParser = new CmdLineParser();
         cmdParser.registerOption("-legacy", () -> optionsBuilder.setLegacy(true));

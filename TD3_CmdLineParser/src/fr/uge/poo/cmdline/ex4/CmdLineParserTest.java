@@ -1,4 +1,5 @@
 package fr.uge.poo.cmdline.ex4;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,69 +38,64 @@ public class CmdLineParserTest {
 
     @Test
     public void throwsExceptionIfRegisterTwiceOption() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         var parser = new CmdLineParser();
         assertThrows(IllegalStateException.class, () -> {
-            parser.registerOption("-legacy", () -> optionsBuilder.setLegacy(true));
-            parser.registerOption("-with-borders", () -> optionsBuilder.setBordered(true));
-            parser.registerOption("-with-borders", () -> optionsBuilder.setBordered(true));
-            optionsBuilder.build();
+            parser.registerOption("-legacy", () -> options.setLegacy(true));
+            parser.registerOption("-with-borders", () -> options.setBordered(true));
+            parser.registerOption("-with-borders", () -> options.setBordered(true));
         });
     }
 
     @Test
     public void checkLegacyValueTrue() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         var parser = new CmdLineParser();
         String[] arguments = {"-legacy"};
-        parser.registerOption("-legacy", () -> optionsBuilder.setLegacy(true));
+        parser.registerOption("-legacy", () -> options.setLegacy(true));
         parser.process(arguments);
-        var options = optionsBuilder.build();
         assertTrue(options.isLegacy());
     }
 
     @Test
     public void checkBorderedValueTrue() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new PaintOptions();
         var parser = new CmdLineParser();
         String[] arguments = {"-with-borders"};
-        parser.registerOption("-with-borders", () -> optionsBuilder.setBordered(true));
+        parser.registerOption("-with-borders", () -> options.setBordered(true));
         parser.process(arguments);
-        var options = optionsBuilder.build();
         assertTrue(options.isBordered());
     }
 
     @Test
     public void checkBorderedValueFalse() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new PaintOptions();
         var parser = new CmdLineParser();
         String[] arguments = {"-legacy", "-with-borders"};
-        parser.registerOption("-with-borders", () -> optionsBuilder.setBordered(false));
+        parser.registerOption("-with-borders", () -> options.setBordered(false));
         parser.process(arguments);
-        var options = optionsBuilder.build();
         assertFalse(options.isBordered());
     }
 
     @Test
     public void checkBorderedValueFalseThenTrue() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         var parser = new CmdLineParser();
         String[] arguments = {"-no-borders", "-with-borders"};
-        parser.registerOption("-no-borders", () -> optionsBuilder.setBordered(false));
-        parser.registerOption("-with-borders", () -> optionsBuilder.setBordered(true));
+        parser.registerOption("-no-borders", () -> options.setBordered(false));
+        parser.registerOption("-with-borders", () -> options.setBordered(true));
         parser.process(arguments);
-        var options = optionsBuilder.build();
         assertTrue(options.isBordered());
     }
 
     @Test
     public void checkFilenames() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         String[] arguments = {"-legacy", "-no-borders", "-with-borders", "filename1", "filename2"};
-        var cmdParser = new fr.uge.poo.cmdline.ex2.CmdLineParser();
-        cmdParser.registerOption("-legacy", () -> optionsBuilder.setLegacy(true));
-        cmdParser.registerOption("-with-borders", () -> optionsBuilder.setBordered(true));
-        cmdParser.registerOption("-no-borders", () -> optionsBuilder.setBordered(false));
+        var cmdParser = new CmdLineParser();
+        cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
+        cmdParser.registerOption("-with-borders", () -> options.setBordered(true));
+        cmdParser.registerOption("-no-borders", () -> options.setBordered(false));
         var files = cmdParser.process(arguments);
 
         assertAll(
@@ -130,45 +126,45 @@ public class CmdLineParserTest {
 
     @Test
     public void checkRegisterOptionParametersValue() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         String[] arguments = {"-legacy", "-no-borders", "-border-width", "500", "-windows-name", "Area", "filename1", "filename2"};
         var cmdParser = new CmdLineParser();
-        cmdParser.registerWithParameter("-border-width", size -> optionsBuilder.setBorderWidth(Integer.parseInt(size)));
-        cmdParser.registerWithParameter("-windows-name", optionsBuilder::setWindowName);
+        cmdParser.registerWithParameter("-border-width", size -> options.setBorderWidth(Integer.parseInt(size)));
+        cmdParser.registerWithParameter("-windows-name", options::setWindowName);
         cmdParser.process(arguments);
-        var options = optionsBuilder.build();
+
         assertAll(
-                () -> assertEquals(500, options.isBorderWidth()),
-                () -> assertEquals("Area", options.isWindowName())
+                () -> assertEquals(500, options.getBorderWidth()),
+                () -> assertEquals("Area", options.getWindowName())
         );
 
     }
 
     @Test
     public void shouldThrowsExceptionIfRegisterTwiceOptionWithArguments() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         var cmdLineParser = new CmdLineParser();
         assertThrows(IllegalStateException.class, () -> {
-            cmdLineParser.registerWithParameter("-border-width", width -> optionsBuilder.setBorderWidth(Integer.parseInt(width)));
-            cmdLineParser.registerWithParameter("-border-width", width -> optionsBuilder.setBorderWidth(Integer.parseInt(width)));
+            cmdLineParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
+            cmdLineParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
         });
     }
 
     @Test
     public void checkRegisterWithAndWithoutParameter() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         var cmdParser = new CmdLineParser();
         String[] arguments = {"-legacy", "-window-name", "Area", "draw1.txt", "draw2.txt", "-border-width", "800"};
 
-        cmdParser.registerOption("-legacy", () ->  optionsBuilder.setLegacy(true));
-        cmdParser.registerWithParameter("-border-width", width ->  optionsBuilder.setBorderWidth(Integer.parseInt(width)));
-        cmdParser.registerWithParameter("-window-name",  optionsBuilder::setWindowName);
+        cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
+        cmdParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
+        cmdParser.registerWithParameter("-window-name", options::setWindowName);
 
         var files = cmdParser.process(arguments);
-        var options = optionsBuilder.build();
+
         assertAll(
-                () -> assertEquals(800, options.isBorderWidth()),
-                () -> assertEquals("Area", options.isWindowName()),
+                () -> assertEquals(800, options.getBorderWidth()),
+                () -> assertEquals("Area", options.getWindowName()),
                 () -> assertEquals(2, files.size()),
                 () -> assertTrue(options.isLegacy())
         );
@@ -177,22 +173,21 @@ public class CmdLineParserTest {
     @Test
     public void checkRegisterWithWindowNameValue() {
         var cmdLineParser = new CmdLineParser();
-        var optionsBuilder = new PaintOptionsBuilder();
+        var paint = new Application.PaintOptions();
         String[] args  = {"-window-name", "Area", "draw1.txt", "draw2.txt"};
-        cmdLineParser.registerWithParameter("-window-name", optionsBuilder::setWindowName);
+        cmdLineParser.registerWithParameter("-window-name", paint::setWindowName);
         cmdLineParser.process(args);
-        var options = optionsBuilder.build();
-        assertEquals("Area", options.isWindowName());
+        assertEquals("Area", paint.getWindowName());
     }
 
     @Test
     public void shouldThrowsIllegalStateExceptionIfBadRegisterWithoutParameter() {
-        var optionsBuilder = new PaintOptionsBuilder();
+        var options = new Application.PaintOptions();
         var cmdLineParser = new CmdLineParser();
         String[] arguments = {"-legacy", "filename1", "filename2", "-window-name"};
 
-        cmdLineParser.registerOption("-legacy", () -> optionsBuilder.setLegacy(true));
-        cmdLineParser.registerWithParameter("-window-name", optionsBuilder::setWindowName);
+        cmdLineParser.registerOption("-legacy", () -> options.setLegacy(true));
+        cmdLineParser.registerWithParameter("-window-name", options::setWindowName);
 
         assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
     }
@@ -200,11 +195,11 @@ public class CmdLineParserTest {
     @Test
     public void checkFileNameWhenRegisterWithParameter() {
         var cmdLineParser = new CmdLineParser();
-        var optionsBuilder = new PaintOptionsBuilder();
+        var paintOptions = new Application.PaintOptions();
         String[] args = {"-legacy", "-window-name", "Area", "draw1.txt", "draw2.txt", "-border-width", "250"};
-        cmdLineParser.registerOption("-legacy", () -> optionsBuilder.setLegacy(true));
-        cmdLineParser.registerWithParameter("-border-width", width -> optionsBuilder.setBorderWidth(Integer.parseInt(width)));
-        cmdLineParser.registerWithParameter("-window-name", optionsBuilder::setWindowName);
+        cmdLineParser.registerOption("-legacy", () -> paintOptions.setLegacy(true));
+        cmdLineParser.registerWithParameter("-border-width", width -> paintOptions.setBorderWidth(Integer.parseInt(width)));
+        cmdLineParser.registerWithParameter("-window-name", paintOptions::setWindowName);
 
         var listOfFiles = cmdLineParser.process(args);
         assertAll(
