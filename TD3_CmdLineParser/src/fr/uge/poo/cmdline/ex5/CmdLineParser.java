@@ -1,7 +1,10 @@
-package fr.uge.poo.cmdline.ex4;
+package fr.uge.poo.cmdline.ex5;
+
+import fr.uge.poo.cmdline.ex4.ProcessException;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CmdLineParser {
 
@@ -23,6 +26,17 @@ public class CmdLineParser {
         }
     }
 
+    public String usage() {
+        return registeredOptionsWithParameterUniqueMap
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(opt -> opt.name))
+                .filter(opt -> !opt.documentation.isEmpty())
+                .map(option -> option.name + " : " + option.documentation)
+                .collect(Collectors.joining("\n"));
+    }
+
+
     public List<Path> process(String[] argumentsLineCommand) throws ProcessException {
         checkIfArgumentsAreNull(argumentsLineCommand);
         var paths = new ArrayList<Path>();
@@ -35,17 +49,23 @@ public class CmdLineParser {
                 continue;
             }
 
-            var currentOption = registeredOptionsWithParameterUniqueMap.get(nextValue);
+            var optionName = registeredOptionsWithParameterUniqueMap
+                    .values()
+                    .stream()
+                    // search if an alias already exists for current argument
+                    .filter(opt -> opt.aliasesSet.contains(nextValue))
+                    .findFirst()
+                    .map(o -> o.name)
+                    .orElse(null);
+
+            if (optionName == null) {
+                throw new IllegalStateException("Error : Name of option is null");
+            }
+            var currentOption = registeredOptionsWithParameterUniqueMap.get(optionName);
             if (currentOption == null) {
-                throw new IllegalStateException("Error this option doesn't exist");
+                throw new IllegalStateException("Error: this option doesn't exist");
             }
 
-            /**
-             var optionArguments = IntStream
-             .range(0, currentOption.numberArguments)
-             .mapToObj(arg -> iterator.next()) // mapToObj more specific
-             .collect(Collectors.toList());
-             **/
             // get arguments of one option
             var optionsArguments = new ArrayList<String>();
             for (var i = 0; i < currentOption.numberArguments; i++) {
@@ -72,7 +92,6 @@ public class CmdLineParser {
         }
 
         return paths;
-
     }
 
     private static void checkIfArgumentsAreNull(Object... args) {

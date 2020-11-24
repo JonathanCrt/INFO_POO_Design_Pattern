@@ -8,9 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("static-method")
 public class CmdLineParserTest {
 
-    /******************************** Exercise 1 ***********************************/
-
-
+    // exercice 4
     @Test
     public void processShouldFailFastOnNullArgument() {
         var parser = new CmdLineParser();
@@ -18,194 +16,161 @@ public class CmdLineParserTest {
     }
 
     @Test
-    public void checkRequiredNotNullOnLambda() {
+    public void checkRequiredNullOnOption() {
         var parser = new CmdLineParser();
-        assertThrows(NullPointerException.class, () -> parser.registerOption("-legacy", null));
-    }
-
-    @Test
-    public void checkRequiredNotNullOnOptionName() {
-        var parser = new CmdLineParser();
-        assertThrows(NullPointerException.class, () -> parser.registerOption(null, () -> {
-        }));
-    }
-
-    @Test
-    public void checkRequiredNotNullOnOptionRegister() {
-        var parser = new CmdLineParser();
-        assertThrows(NullPointerException.class, () -> parser.registerOption(null, null));
+        assertThrows(NullPointerException.class, () -> parser.registerOption(null));
     }
 
     @Test
     public void throwsExceptionIfRegisterTwiceOption() {
-        var options = new Application.PaintOptions();
+        var optionOne = new Option.OptionBuilder("-legacy", 0, code -> {
+        }).build();
+        var optionTwo = new Option.OptionBuilder("-legacy", 0, code -> {
+        }).build();
         var parser = new CmdLineParser();
         assertThrows(IllegalStateException.class, () -> {
-            parser.registerOption("-legacy", () -> options.setLegacy(true));
-            parser.registerOption("-with-borders", () -> options.setBordered(true));
-            parser.registerOption("-with-borders", () -> options.setBordered(true));
+            parser.registerOption(optionOne);
+            parser.registerOption(optionTwo);
         });
     }
 
     @Test
-    public void checkLegacyValueTrue() {
-        var options = new Application.PaintOptions();
+    public void checkLegacyValueTrue() throws ProcessException {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var option = new Option.OptionBuilder("-legacy", 0, ptOpt -> paintOptionsBuilder.setLegacy(true)).build();
         var parser = new CmdLineParser();
         String[] arguments = {"-legacy"};
-        parser.registerOption("-legacy", () -> options.setLegacy(true));
+        parser.registerOption(option);
         parser.process(arguments);
-        assertTrue(options.isLegacy());
+        var paintOptions = paintOptionsBuilder.build();
+        assertTrue(paintOptions.isLegacy());
     }
 
+
     @Test
-    public void checkBorderedValueTrue() {
-        var options = new PaintOptions();
+    public void checkBorderedValueTrue() throws ProcessException {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var option = new Option.OptionBuilder("-with-borders", 0, ptOpt -> paintOptionsBuilder.setBordered(true)).build();
         var parser = new CmdLineParser();
         String[] arguments = {"-with-borders"};
-        parser.registerOption("-with-borders", () -> options.setBordered(true));
+        parser.registerOption(option);
         parser.process(arguments);
-        assertTrue(options.isBordered());
+        var paintOptions = paintOptionsBuilder.build();
+        assertTrue(paintOptions.isBordered());
     }
 
+
     @Test
-    public void checkBorderedValueFalse() {
-        var options = new PaintOptions();
+    public void checkCorrectWindowsProperties() throws ProcessException {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var optionOne = new Option.OptionBuilder("-window-width", 1, opt -> paintOptionsBuilder.setWindowWidth(500)).build();
+        var optionTwo = new Option.OptionBuilder("-window-height", 1, opt -> paintOptionsBuilder.setWindowHeight(500)).build();
+        var optionThree = new Option.OptionBuilder("-window-name", 1, opt -> paintOptionsBuilder.setWindowName("Area")).build();
+
         var parser = new CmdLineParser();
-        String[] arguments = {"-legacy", "-with-borders"};
-        parser.registerOption("-with-borders", () -> options.setBordered(false));
+        String[] arguments = {"-window-width", "500", "-window-height", "500", "-window-name", "Area"};
+        parser.registerOption(optionOne);
+        parser.registerOption(optionTwo);
+        parser.registerOption(optionThree);
         parser.process(arguments);
-        assertFalse(options.isBordered());
-    }
-
-    @Test
-    public void checkBorderedValueFalseThenTrue() {
-        var options = new Application.PaintOptions();
-        var parser = new CmdLineParser();
-        String[] arguments = {"-no-borders", "-with-borders"};
-        parser.registerOption("-no-borders", () -> options.setBordered(false));
-        parser.registerOption("-with-borders", () -> options.setBordered(true));
-        parser.process(arguments);
-        assertTrue(options.isBordered());
-    }
-
-    @Test
-    public void checkFilenames() {
-        var options = new Application.PaintOptions();
-        String[] arguments = {"-legacy", "-no-borders", "-with-borders", "filename1", "filename2"};
-        var cmdParser = new CmdLineParser();
-        cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
-        cmdParser.registerOption("-with-borders", () -> options.setBordered(true));
-        cmdParser.registerOption("-no-borders", () -> options.setBordered(false));
-        var files = cmdParser.process(arguments);
-
-        assertAll(
-                () -> assertEquals(2, files.size()),
-                () -> assertEquals(files.get(1)
-                        .getFileName()
-                        .toString(), "filename2")
-        );
-    }
-
-
-    /******************************** Exercise 2 ***********************************/
-
-
-    @Test
-    public void shouldThrowsNullPointerIfNullConsumer() {
-        var cmdParser = new CmdLineParser();
-        assertThrows(NullPointerException.class, () -> cmdParser.registerWithParameter("window-name", null));
-    }
-
-    @Test
-    public void shouldThrowsNullPointerIfNullOptionName() {
-        var cmdParser = new CmdLineParser();
-        assertThrows(NullPointerException.class, () -> cmdParser.registerWithParameter(null, code -> {
-        }));
-    }
-
-
-    @Test
-    public void checkRegisterOptionParametersValue() {
-        var options = new Application.PaintOptions();
-        String[] arguments = {"-legacy", "-no-borders", "-border-width", "500", "-windows-name", "Area", "filename1", "filename2"};
-        var cmdParser = new CmdLineParser();
-        cmdParser.registerWithParameter("-border-width", size -> options.setBorderWidth(Integer.parseInt(size)));
-        cmdParser.registerWithParameter("-windows-name", options::setWindowName);
-        cmdParser.process(arguments);
-
-        assertAll(
-                () -> assertEquals(500, options.getBorderWidth()),
-                () -> assertEquals("Area", options.getWindowName())
-        );
-
-    }
-
-    @Test
-    public void shouldThrowsExceptionIfRegisterTwiceOptionWithArguments() {
-        var options = new Application.PaintOptions();
-        var cmdLineParser = new CmdLineParser();
-        assertThrows(IllegalStateException.class, () -> {
-            cmdLineParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
-            cmdLineParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
+        var paintOptions = paintOptionsBuilder.build();
+        assertAll(() -> {
+            assertEquals(500, paintOptions.getWindowWidth());
+            assertEquals(500, paintOptions.getWindowHeight());
+            assertEquals("Area", paintOptions.getWindowName());
         });
+
     }
 
     @Test
-    public void checkRegisterWithAndWithoutParameter() {
-        var options = new Application.PaintOptions();
-        var cmdParser = new CmdLineParser();
-        String[] arguments = {"-legacy", "-window-name", "Area", "draw1.txt", "draw2.txt", "-border-width", "800"};
-
-        cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
-        cmdParser.registerWithParameter("-border-width", width -> options.setBorderWidth(Integer.parseInt(width)));
-        cmdParser.registerWithParameter("-window-name", options::setWindowName);
-
-        var files = cmdParser.process(arguments);
-
-        assertAll(
-                () -> assertEquals(800, options.getBorderWidth()),
-                () -> assertEquals("Area", options.getWindowName()),
-                () -> assertEquals(2, files.size()),
-                () -> assertTrue(options.isLegacy())
-        );
-    }
-
-    @Test
-    public void checkRegisterWithWindowNameValue() {
+    public void checkUnknownOption() {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
         var cmdLineParser = new CmdLineParser();
-        var paint = new Application.PaintOptions();
-        String[] args  = {"-window-name", "Area", "draw1.txt", "draw2.txt"};
-        cmdLineParser.registerWithParameter("-window-name", paint::setWindowName);
-        cmdLineParser.process(args);
-        assertEquals("Area", paint.getWindowName());
+        var arguments = new String[]{"-legacy", "-window-width", "-unknown"};
+
+        var optionOne = new Option.OptionBuilder("-legacy", 0, param -> paintOptionsBuilder.setLegacy(true))
+                .isMandatory()
+                .build();
+
+        var optionTwo = new Option.OptionBuilder("-max-height", 2, (parameters) -> paintOptionsBuilder
+                .setWindowWidth(Integer.parseInt(parameters.get(0)))
+                .setWindowHeight(Integer.parseInt(parameters.get(1))))
+                .isMandatory()
+                .build();
+
+        cmdLineParser.registerOption(optionOne);
+        cmdLineParser.registerOption(optionTwo);
+        assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
+
     }
 
     @Test
-    public void shouldThrowsIllegalStateExceptionIfBadRegisterWithoutParameter() {
-        var options = new Application.PaintOptions();
+    public void checkMandatoryOption() {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
         var cmdLineParser = new CmdLineParser();
-        String[] arguments = {"-legacy", "filename1", "filename2", "-window-name"};
+        var arguments = new String[]{"-myOption"};
 
-        cmdLineParser.registerOption("-legacy", () -> options.setLegacy(true));
-        cmdLineParser.registerWithParameter("-window-name", options::setWindowName);
+        var option = new Option.OptionBuilder("-no-borders", 0, (parameters) -> paintOptionsBuilder.setLegacy(true))
+                .isMandatory()
+                .build();
 
+        cmdLineParser.registerOption(option);
         assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
     }
 
     @Test
-    public void checkFileNameWhenRegisterWithParameter() {
+    public void checkThrowsIllegalStateExceptionWhenOptionNameIsEmpty() {
         var cmdLineParser = new CmdLineParser();
-        var paintOptions = new Application.PaintOptions();
-        String[] args = {"-legacy", "-window-name", "Area", "draw1.txt", "draw2.txt", "-border-width", "250"};
-        cmdLineParser.registerOption("-legacy", () -> paintOptions.setLegacy(true));
-        cmdLineParser.registerWithParameter("-border-width", width -> paintOptions.setBorderWidth(Integer.parseInt(width)));
-        cmdLineParser.registerWithParameter("-window-name", paintOptions::setWindowName);
-
-        var listOfFiles = cmdLineParser.process(args);
-        assertAll(
-                () -> assertEquals("draw1.txt", listOfFiles.get(0).getFileName().toString()),
-                () -> assertEquals(2, listOfFiles.size()),
-                () -> assertEquals("draw2.txt", listOfFiles.get(1).getFileName().toString())
-        );
+        assertThrows(
+                IllegalStateException.class, () -> cmdLineParser.registerOption(new Option.OptionBuilder("", 0, __ -> {
+                }).build()));
     }
+
+
+    @Test
+    public void checkOptionWithTwoArguments() throws ProcessException {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var cmdLineParser = new CmdLineParser();
+        String[] arguments = {"-no-borders", "-window-size", "800", "600", "data1", "data2"};
+
+        var optionOne = new Option.OptionBuilder("-no-borders", 0, param -> paintOptionsBuilder.setLegacy(true))
+                .isMandatory()
+                .build();
+
+        var optionTwo = new Option.OptionBuilder("-window-size", 2, param -> paintOptionsBuilder
+                .setWindowWidth(Integer.parseInt(param.get(0)))
+                .setWindowHeight(Integer.parseInt(param.get(1))))
+                .isMandatory()
+                .build();
+
+        cmdLineParser.registerOption(optionOne);
+        cmdLineParser.registerOption(optionTwo);
+        cmdLineParser.process(arguments);
+        var option = paintOptionsBuilder.build();
+        assertEquals(800, option.getWindowWidth());
+        assertEquals(600, option.getWindowHeight());
+
+    }
+
+    @Test
+    public void checkThrowsIllegalArgumentExceptionWhenPassOptionInArgumentOfOption() {
+        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var cmdLineParser = new CmdLineParser();
+        String[] arguments = {"-legacy", "-window-name", "-xvtz"};
+
+        var optionOne = new Option.OptionBuilder("-legacy", 0, parameters -> paintOptionsBuilder.setLegacy(true))
+                .isMandatory()
+                .build();
+
+        var optionTwo = new Option.OptionBuilder("-window-name", 1, parameter -> paintOptionsBuilder
+                .setWindowName(parameter.get(0)))
+                .isMandatory()
+                .build();
+
+        cmdLineParser.registerOption(optionOne);
+        cmdLineParser.registerOption(optionTwo);
+        assertThrows(IllegalArgumentException.class, () -> cmdLineParser.process(arguments));
+    }
+
+
 }

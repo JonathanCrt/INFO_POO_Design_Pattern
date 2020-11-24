@@ -1,6 +1,6 @@
-package fr.uge.poo.cmdline.ex4;
+package fr.uge.poo.cmdline.ex5;
 
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Option {
@@ -8,7 +8,12 @@ public class Option {
     boolean isMandatory;
     final int numberArguments;
     final String name;
+
+    final Set<String> aliasesSet;
+
     final Consumer<List<String>> acListConsumer;
+
+    final String documentation;
 
     /**
      * Ce contrcuteur est privé pour respecter le design pattern du Builder. Il ne faut surtout pas
@@ -19,7 +24,9 @@ public class Option {
     private Option(OptionBuilder builder) {
         this.numberArguments = builder.numberArguments;
         this.name = builder.name;
+        this.aliasesSet = new HashSet<>();
         this.acListConsumer = builder.acListConsumer;
+        this.documentation = builder.documentation;
     }
 
     public static class OptionBuilder {
@@ -27,13 +34,17 @@ public class Option {
         boolean isMandatory;
         int numberArguments;
         String name;
+        Set<String> aliasesSet;
+
         Consumer<List<String>> acListConsumer;
 
+        String documentation = "";
 
         public OptionBuilder(String name, int numberArguments, Consumer<List<String>> acListConsumer) {
             this.numberArguments = numberArguments;
             this.name = name;
             this.acListConsumer = acListConsumer;
+            this.aliasesSet = new HashSet<>();
         }
 
         public OptionBuilder isMandatory() {
@@ -53,6 +64,18 @@ public class Option {
 
         public OptionBuilder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public OptionBuilder addAlias(String alias) {
+            Objects.requireNonNull(alias);
+            aliasesSet.add(alias);
+            return this;
+        }
+
+        public OptionBuilder setDocumentation(String documentation) {
+            Objects.requireNonNull(documentation);
+            this.documentation = documentation;
             return this;
         }
 
