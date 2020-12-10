@@ -12,7 +12,7 @@ public class CmdLineParser {
     private final Set<String> processedOptionsSet = new HashSet<>();
 
 
-    public void registerOption(Option option) {
+    public void addFlag(Option option) {
         checkIfArgumentsAreNull(option);
         if (registeredOptionsWithParameterUniqueMap.get(option.name) != null) {
             throw new IllegalStateException("Argument already exists");

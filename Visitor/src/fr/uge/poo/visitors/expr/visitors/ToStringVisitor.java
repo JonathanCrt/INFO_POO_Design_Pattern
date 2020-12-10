@@ -3,15 +3,35 @@ package fr.uge.poo.visitors.expr.visitors;
 import fr.uge.poo.visitors.expr.BinOp;
 import fr.uge.poo.visitors.expr.Value;
 
-public class ToStringVisitor implements ExprVisitor<String> {
+public class ToStringVisitor implements ExprVisitor<Void> {
 
+    private final StringBuilder stringBuilder = new StringBuilder();
+
+    // method return void
     @Override
-    public String visitValue(Value value) {
-        return value.toString();
+    public Void visitValue(Value value) {
+        stringBuilder.append(value.getValue());
+        return null;
     }
 
     @Override
-    public String visitBinOp(BinOp binOp) {
-        return binOp.toString();
+    public Void visitBinOp(BinOp binOp) {
+        // "(" + left + ' ' + opName + ' ' + right + ')'
+        stringBuilder
+                .append("(");
+        binOp.getLeft().accept(this); // met dans le string builder le coté gauche (recursion)
+        stringBuilder
+                .append(" ")
+                .append(binOp.getOpName())
+                .append(" ");
+        binOp.getRight().accept(this);
+        stringBuilder
+                .append(")");
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return stringBuilder.toString();
     }
 }

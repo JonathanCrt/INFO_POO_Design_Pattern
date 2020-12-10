@@ -1,4 +1,0 @@
-============================= ex3 ===================================
-
-- Visiteur => ce rapproche de l'idée d'un switch
-- ExprVistor sotcke une map

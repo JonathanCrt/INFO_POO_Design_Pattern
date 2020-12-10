@@ -3,7 +3,7 @@ package fr.uge.poo.cmdline.ex6;
 public class Application {
 
     public static void main(String[] args)  {
-        var optionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var optionsBuilder = new PaintSettings.PaintSettingsBuilder();
         String[] arguments = {"-legacy", "-min-size", "200", "300", "filename1", "filename2"};
         var cmdLineParser = new CmdLineParser();
 

@@ -13,7 +13,7 @@ public class CmdLineParser {
 
     private final HashMap<String, Consumer<Iterator<String>>> registeredOptionsWithParameterUniqueMap = new HashMap<>();
 
-    public void registerOption(String option, Runnable code) {
+    public void addFlag(String option, Runnable code) {
         checkIfArgumentsAreNull(option, code);
         if (registeredOptionsWithParameterUniqueMap.containsKey(option)) {
             throw new IllegalStateException(option + " already exists");
@@ -28,7 +28,7 @@ public class CmdLineParser {
      * @param optionName name of option
      * @param code       action to do
      */
-    public void registerWithParameter(String optionName, Consumer<String> code) {
+    public void addOptionWithOneParameter(String optionName, Consumer<String> code) {
         checkIfArgumentsAreNull(optionName, code);
         if (registeredOptionsWithParameterUniqueMap.containsKey(optionName)) {
             throw new IllegalStateException(optionName + "already exists");

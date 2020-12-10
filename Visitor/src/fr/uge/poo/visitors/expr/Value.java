@@ -18,9 +18,18 @@ public class Value implements Expr {
         return visitor.visitValue(this);
     }
 
+    /*
+    @Override
+    public int eval() {
+        return  value;
+    }
+     */
+
+    /*
     @Override
     public String toString() {
         return Integer.toString(value);
     }
+     */
 
 }

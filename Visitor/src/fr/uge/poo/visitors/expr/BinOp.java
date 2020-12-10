@@ -40,8 +40,19 @@ public class BinOp implements Expr {
         return visitor.visitBinOp(this);
     }
 
+    /*
+    @Override
+    public int eval() {
+        return operator.applyAsInt(left.eval(), right.eval());
+    }
+     */
+
+    // we can delete toString()
+    /*
     @Override
     public String toString() {
         return "(" + left + ' ' + opName + ' ' + right + ')';
     }
+
+     */
 }

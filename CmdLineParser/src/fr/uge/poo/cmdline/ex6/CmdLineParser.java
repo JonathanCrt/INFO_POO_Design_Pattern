@@ -186,7 +186,6 @@ public class CmdLineParser {
     /******************************  CmdLineParser  ******************************/
 
     private static final Logger LOGGER = Logger.getLogger(CmdLineParser.class.getName());
-    private final HashMap<String, Option> registeredOptionsMap = new HashMap<>();
     private final Set<String> processedOptionsSet = new HashSet<>();
     private final OptionsManager optionsManager = new OptionsManager(); // default constructor
     private final DocumentationObserver documentationObserver = new DocumentationObserver(); // default constructor

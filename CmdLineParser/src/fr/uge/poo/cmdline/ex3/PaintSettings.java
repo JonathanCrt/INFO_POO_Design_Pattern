@@ -1,39 +1,39 @@
 package fr.uge.poo.cmdline.ex3;
 
-public class PaintOptions {
+public class PaintSettings {
 
-    public static class PaintOptionsBuilder {
+    public static class PaintSettingsBuilder {
 
         private boolean legacy = false;
         private boolean bordered = true;
         private int borderWidth;
         private String windowName = null;
 
-        public PaintOptionsBuilder setLegacy(boolean legacy) {
+        public PaintSettingsBuilder setLegacy(boolean legacy) {
             this.legacy = legacy;
             return this;
         }
 
-        public PaintOptionsBuilder setBordered(boolean bordered) {
+        public PaintSettingsBuilder setBordered(boolean bordered) {
             this.bordered = bordered;
             return this;
         }
 
-        public PaintOptionsBuilder setBorderWidth(int width) {
+        public PaintSettingsBuilder setBorderWidth(int width) {
             this.borderWidth = width;
             return this;
         }
 
-        public PaintOptionsBuilder setWindowName(String windowName) {
+        public PaintSettingsBuilder setWindowName(String windowName) {
             this.windowName = windowName;
             return this;
         }
 
-        public PaintOptions build() {
+        public PaintSettings build() {
             if (this.windowName.isEmpty() || this.windowName.isBlank()) {
                 throw new IllegalStateException();
             }
-            return new PaintOptions(this.legacy, this.bordered, this.borderWidth, this.windowName);
+            return new PaintSettings(this.legacy, this.bordered, this.borderWidth, this.windowName);
         }
     }
 
@@ -53,7 +53,7 @@ public class PaintOptions {
      * @param borderWidth
      * @param windowName
      */
-    PaintOptions(boolean legacy, boolean bordered, int borderWidth, String windowName) {
+    PaintSettings(boolean legacy, boolean bordered, int borderWidth, String windowName) {
         this.legacy = legacy;
         this.bordered = bordered;
         this.borderWidth = borderWidth;

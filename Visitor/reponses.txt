@@ -1,0 +1,16 @@
+============================= ex1 ===================================
+
+- Visiteur => ce rapproche de l'idée d'un switch
+- ExprVistor stocke une map
+
+============================= ex2 ===================================
+
+- Visiteur => ce rapproche de l'idée d'un switch
+- ExprVistor sotcke une map
+- Visitor avec StringBuilder -> Autre façon : que le accept renvoi
+
+
+============================= ex3 ===================================
+
+- Visiteur => ce rapproche de l'idée d'un switch
+- ExprVistor stocke une map

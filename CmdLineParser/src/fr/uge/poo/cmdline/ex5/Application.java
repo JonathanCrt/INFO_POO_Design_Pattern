@@ -5,7 +5,7 @@ import fr.uge.poo.cmdline.ex4.ProcessException;
 public class Application {
 
     public static void main(String[] args) throws ProcessException {
-        var optionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var optionsBuilder = new PaintSettings.PaintSettingsBuilder();
         String[] arguments = {"-legacy", "-min-size", "200", "300", "filename1", "filename2"};
         var cmdParser = new CmdLineParser();
 
@@ -24,9 +24,9 @@ public class Application {
         var optionThree = new Option.OptionBuilder("-toto", 0, (parameters) -> optionsBuilder.setLegacy(true))
                 .build();
 
-        cmdParser.registerOption(optionOne);
-        cmdParser.registerOption(optionTwo);
-        cmdParser.registerOption(optionThree);
+        cmdParser.addOption(optionOne);
+        cmdParser.addOption(optionTwo);
+        cmdParser.addOption(optionThree);
 
         var files = cmdParser.process(arguments);
         files.forEach(System.out::println);

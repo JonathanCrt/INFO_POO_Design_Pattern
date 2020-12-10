@@ -3,6 +3,7 @@ package fr.uge.poo.cmdline.ex7;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ public class CmdLineParser {
      */
     @FunctionalInterface
     interface ParameterRetrievalStrategy {
-        List<String> treatParameters(int numberArguments, Iterator<String> iterator);
+        List<String> treatParameters(int numberArguments, Iterator<String> iterator, Predicate<String> predicate);
     }
 
     /******************************  Observer  ******************************/
@@ -54,15 +55,15 @@ public class CmdLineParser {
         @Override
         public void onRegisteredOption(OptionsManager optionsManager, Option option) {
             // if and only if an option is mandatory, we add it to map
-            if (option.isMandatory) {
-                this.mandatoryOptionsList.add(option.name);
+            if (option.isMandatory()) {
+                this.mandatoryOptionsList.add(option.getName());
             }
         }
 
         @Override
         public void onProcessedOption(OptionsManager optionsManager, Option option) {
             // The option has been resgitered so we can delete it
-            this.mandatoryOptionsList.remove(option.name);
+            this.mandatoryOptionsList.remove(option.getName());
         }
 
         @Override
@@ -82,7 +83,7 @@ public class CmdLineParser {
         public void onRegisteredOption(OptionsManager optionsManager, Option option) {
             // we add option which only have documentation
             if (option.haveDocumentation() != null) {
-                documentationOptionsTreeMap.put(option.name, option.documentation);
+                documentationOptionsTreeMap.put(option.getName(), option.haveDocumentation());
             }
         }
 
@@ -104,7 +105,7 @@ public class CmdLineParser {
 
     }
 
-    static class ConflitObserver implements OptionsObserver {
+    static class ConflictObserver implements OptionsObserver {
 
         @Override
         public void onRegisteredOption(OptionsManager optionsManager, Option option) {
@@ -137,8 +138,8 @@ public class CmdLineParser {
          */
         void register(Option option) {
             checkIfArgumentsAreNull(option);
-            registerAux(option.name, option);
-            for (var alias : option.aliasesSet) {
+            registerAux(option.getName(), option);
+            for (var alias : option.getAliasesSet()) {
                 registerAux(alias, option);
             }
         }
@@ -195,11 +196,10 @@ public class CmdLineParser {
     /******************************  CmdLineParser  ******************************/
 
     private static final Logger LOGGER = Logger.getLogger(CmdLineParser.class.getName());
-    private final HashMap<String, Option> registeredOptionsMap = new HashMap<>();
     private final Set<String> processedOptionsSet = new HashSet<>();
     private final OptionsManager optionsManager = new OptionsManager(); // default constructor
     private final DocumentationObserver documentationObserver = new DocumentationObserver(); // default constructor
-    public static final ParameterRetrievalStrategy STANDARD = (numberArguments, iterator) -> {
+    public static final ParameterRetrievalStrategy STANDARD = (numberArguments, iterator, predicate) -> {
         var listArguments = new ArrayList<String>();
         for (var i = 0; i < numberArguments; i++) {
             var value = iterator.next();
@@ -211,7 +211,7 @@ public class CmdLineParser {
         return listArguments;
     };
 
-    public static final ParameterRetrievalStrategy RELAXED = (numberArguments, iterator) -> {
+    public static final ParameterRetrievalStrategy RELAXED = (numberArguments, iterator, predicate) -> {
         var listArguments = new ArrayList<String>();
         for (var i = 0; i < numberArguments; i++) {
             var value = iterator.next();
@@ -223,10 +223,22 @@ public class CmdLineParser {
         return listArguments;
     };
 
-    public static final ParameterRetrievalStrategy OLDSCHOOL = (numberArguments, iterator) -> {
+    public static final ParameterRetrievalStrategy OLDSCHOOL = (numberArguments, iterator, predicate) -> {
         var listArguments = new ArrayList<String>();
         for (var i = 0; i < numberArguments; i++) {
             var value = iterator.next();
+            listArguments.add(value);
+        }
+        return listArguments;
+    };
+
+    public static final ParameterRetrievalStrategy SMARTRELAXED = (numberArguments, iterator, predicate) -> {
+        var listArguments = new ArrayList<String>();
+        for (var i = 0; i < numberArguments; i++) {
+            var value = iterator.next();
+            if (predicate.test(value)) {
+                continue;
+            }
             listArguments.add(value);
         }
         return listArguments;
@@ -238,7 +250,7 @@ public class CmdLineParser {
         //this.optionsManager.registerObserver(new LoggerObserver());
         this.optionsManager.registerObserver(new MandatoryObserver());
         this.optionsManager.registerObserver(documentationObserver);
-        this.optionsManager.registerObserver(new ConflitObserver());
+        this.optionsManager.registerObserver(new ConflictObserver());
     }
 
     public void addFlag(String nameFlag, Runnable code) {
@@ -278,10 +290,10 @@ public class CmdLineParser {
                         .orElseThrow(() -> new ParseException("Error :" + nextValue + " unknown"));
 
                 // get arguments of one option
-                var optionsArguments = strategy.treatParameters(currentOption.numberArguments, iterator);
+                var optionsArguments = strategy.treatParameters(currentOption.getNumberArguments(), iterator, optionsManager.byName::containsKey);
 
-                currentOption.acListConsumer.accept(optionsArguments);
-                this.processedOptionsSet.add(currentOption.name);
+                currentOption.getAcListConsumer().accept(optionsArguments);
+                this.processedOptionsSet.add(currentOption.getName());
             } else {
                 paths.add(Path.of(nextValue));
             }

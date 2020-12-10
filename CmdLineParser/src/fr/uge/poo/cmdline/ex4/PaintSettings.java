@@ -1,8 +1,8 @@
-package fr.uge.poo.cmdline.ex6;
+package fr.uge.poo.cmdline.ex4;
 
-public class PaintOptions {
+public class PaintSettings {
 
-    public static class PaintOptionsBuilder {
+    public static class PaintSettingsBuilder {
 
         private boolean legacy = false;
         private boolean bordered = true;
@@ -12,39 +12,39 @@ public class PaintOptions {
 
         private String windowName;
 
-        public PaintOptionsBuilder setLegacy(boolean legacy) {
+        public PaintSettingsBuilder setLegacy(boolean legacy) {
             this.legacy = legacy;
             return this;
         }
 
-        public PaintOptionsBuilder setBordered(boolean bordered) {
+        public PaintSettingsBuilder setBordered(boolean bordered) {
             this.bordered = bordered;
             return this;
         }
 
-        public PaintOptionsBuilder setBorderWidth(int width) {
+        public PaintSettingsBuilder setBorderWidth(int width) {
             this.borderWidth = width;
             return this;
         }
 
-        public PaintOptionsBuilder setWindowName(String windowName) {
+        public PaintSettingsBuilder setWindowName(String windowName) {
             this.windowName = windowName;
             return this;
         }
 
-        public PaintOptionsBuilder setWindowWidth(int windowWidth) {
+        public PaintSettingsBuilder setWindowWidth(int windowWidth) {
             this.windowWidth = windowWidth;
             return this;
         }
 
-        public PaintOptionsBuilder setWindowHeight(int windowHeight) {
+        public PaintSettingsBuilder setWindowHeight(int windowHeight) {
             this.windowHeight = windowHeight;
             return this;
         }
 
 
-        public PaintOptions build() {
-            return new PaintOptions(this);
+        public PaintSettings build() {
+            return new PaintSettings(this);
         }
     }
 
@@ -61,7 +61,7 @@ public class PaintOptions {
      * A l'intérieur de PaintOptions, la vsibilité du constructeur est privé
      * Si on veut créer une interface de Builder , on doit créer le Builder en dehors de la classe
      */
-    private PaintOptions(PaintOptionsBuilder builder) {
+    private PaintSettings(PaintSettingsBuilder builder) {
         this.legacy = builder.legacy;
         this.bordered = builder.bordered;
         this.borderWidth = builder.borderWidth;

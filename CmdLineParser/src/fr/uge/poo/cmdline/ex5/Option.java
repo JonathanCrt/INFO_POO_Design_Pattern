@@ -24,7 +24,7 @@ public class Option {
     private Option(OptionBuilder builder) {
         this.numberArguments = builder.numberArguments;
         this.name = builder.name;
-        this.aliasesSet = new HashSet<>();
+        this.aliasesSet = builder.aliasesSet;
         this.acListConsumer = builder.acListConsumer;
         this.documentation = builder.documentation;
     }

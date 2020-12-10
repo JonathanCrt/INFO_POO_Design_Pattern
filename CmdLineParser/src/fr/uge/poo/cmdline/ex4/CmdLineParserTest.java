@@ -18,7 +18,7 @@ public class CmdLineParserTest {
     @Test
     public void checkRequiredNullOnOption() {
         var parser = new CmdLineParser();
-        assertThrows(NullPointerException.class, () -> parser.registerOption(null));
+        assertThrows(NullPointerException.class, () -> parser.addFlag(null));
     }
 
     @Test
@@ -29,18 +29,18 @@ public class CmdLineParserTest {
         }).build();
         var parser = new CmdLineParser();
         assertThrows(IllegalStateException.class, () -> {
-            parser.registerOption(optionOne);
-            parser.registerOption(optionTwo);
+            parser.addFlag(optionOne);
+            parser.addFlag(optionTwo);
         });
     }
 
     @Test
     public void checkLegacyValueTrue() throws ProcessException {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var option = new Option.OptionBuilder("-legacy", 0, ptOpt -> paintOptionsBuilder.setLegacy(true)).build();
         var parser = new CmdLineParser();
         String[] arguments = {"-legacy"};
-        parser.registerOption(option);
+        parser.addFlag(option);
         parser.process(arguments);
         var paintOptions = paintOptionsBuilder.build();
         assertTrue(paintOptions.isLegacy());
@@ -49,11 +49,11 @@ public class CmdLineParserTest {
 
     @Test
     public void checkBorderedValueTrue() throws ProcessException {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var option = new Option.OptionBuilder("-with-borders", 0, ptOpt -> paintOptionsBuilder.setBordered(true)).build();
         var parser = new CmdLineParser();
         String[] arguments = {"-with-borders"};
-        parser.registerOption(option);
+        parser.addFlag(option);
         parser.process(arguments);
         var paintOptions = paintOptionsBuilder.build();
         assertTrue(paintOptions.isBordered());
@@ -62,16 +62,16 @@ public class CmdLineParserTest {
 
     @Test
     public void checkCorrectWindowsProperties() throws ProcessException {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var optionOne = new Option.OptionBuilder("-window-width", 1, opt -> paintOptionsBuilder.setWindowWidth(500)).build();
         var optionTwo = new Option.OptionBuilder("-window-height", 1, opt -> paintOptionsBuilder.setWindowHeight(500)).build();
         var optionThree = new Option.OptionBuilder("-window-name", 1, opt -> paintOptionsBuilder.setWindowName("Area")).build();
 
         var parser = new CmdLineParser();
         String[] arguments = {"-window-width", "500", "-window-height", "500", "-window-name", "Area"};
-        parser.registerOption(optionOne);
-        parser.registerOption(optionTwo);
-        parser.registerOption(optionThree);
+        parser.addFlag(optionOne);
+        parser.addFlag(optionTwo);
+        parser.addFlag(optionThree);
         parser.process(arguments);
         var paintOptions = paintOptionsBuilder.build();
         assertAll(() -> {
@@ -84,7 +84,7 @@ public class CmdLineParserTest {
 
     @Test
     public void checkUnknownOption() {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var cmdLineParser = new CmdLineParser();
         var arguments = new String[]{"-legacy", "-window-width", "-unknown"};
 
@@ -98,15 +98,15 @@ public class CmdLineParserTest {
                 .isMandatory()
                 .build();
 
-        cmdLineParser.registerOption(optionOne);
-        cmdLineParser.registerOption(optionTwo);
+        cmdLineParser.addFlag(optionOne);
+        cmdLineParser.addFlag(optionTwo);
         assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
 
     }
 
     @Test
     public void checkMandatoryOption() {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var cmdLineParser = new CmdLineParser();
         var arguments = new String[]{"-myOption"};
 
@@ -114,7 +114,7 @@ public class CmdLineParserTest {
                 .isMandatory()
                 .build();
 
-        cmdLineParser.registerOption(option);
+        cmdLineParser.addFlag(option);
         assertThrows(IllegalStateException.class, () -> cmdLineParser.process(arguments));
     }
 
@@ -122,14 +122,14 @@ public class CmdLineParserTest {
     public void checkThrowsIllegalStateExceptionWhenOptionNameIsEmpty() {
         var cmdLineParser = new CmdLineParser();
         assertThrows(
-                IllegalStateException.class, () -> cmdLineParser.registerOption(new Option.OptionBuilder("", 0, __ -> {
+                IllegalStateException.class, () -> cmdLineParser.addFlag(new Option.OptionBuilder("", 0, __ -> {
                 }).build()));
     }
 
 
     @Test
     public void checkOptionWithTwoArguments() throws ProcessException {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var cmdLineParser = new CmdLineParser();
         String[] arguments = {"-no-borders", "-window-size", "800", "600", "data1", "data2"};
 
@@ -143,8 +143,8 @@ public class CmdLineParserTest {
                 .isMandatory()
                 .build();
 
-        cmdLineParser.registerOption(optionOne);
-        cmdLineParser.registerOption(optionTwo);
+        cmdLineParser.addFlag(optionOne);
+        cmdLineParser.addFlag(optionTwo);
         cmdLineParser.process(arguments);
         var option = paintOptionsBuilder.build();
         assertEquals(800, option.getWindowWidth());
@@ -154,7 +154,7 @@ public class CmdLineParserTest {
 
     @Test
     public void checkThrowsIllegalArgumentExceptionWhenPassOptionInArgumentOfOption() {
-        var paintOptionsBuilder = new PaintOptions.PaintOptionsBuilder();
+        var paintOptionsBuilder = new PaintSettings.PaintSettingsBuilder();
         var cmdLineParser = new CmdLineParser();
         String[] arguments = {"-legacy", "-window-name", "-xvtz"};
 
@@ -167,8 +167,8 @@ public class CmdLineParserTest {
                 .isMandatory()
                 .build();
 
-        cmdLineParser.registerOption(optionOne);
-        cmdLineParser.registerOption(optionTwo);
+        cmdLineParser.addFlag(optionOne);
+        cmdLineParser.addFlag(optionTwo);
         assertThrows(IllegalArgumentException.class, () -> cmdLineParser.process(arguments));
     }
 

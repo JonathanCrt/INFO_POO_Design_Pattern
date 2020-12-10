@@ -10,11 +10,11 @@ public class CmdLineParser {
 
     private final HashMap<String, Runnable> registeredOptions = new HashMap<>();
 
-    public void registerOption(String option, Runnable code) {
+    public void addFlag(String option, Runnable code) {
         Objects.requireNonNull(option);
         Objects.requireNonNull(code);
         if (registeredOptions.containsKey(option)) {
-            throw new IllegalStateException(option + " already existsZ");
+            throw new IllegalStateException(option + " already exists");
         }
         registeredOptions.put(option, code);
     }

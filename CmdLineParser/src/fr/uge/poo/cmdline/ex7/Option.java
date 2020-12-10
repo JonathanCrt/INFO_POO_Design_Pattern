@@ -5,13 +5,13 @@ import java.util.function.Consumer;
 
 public class Option {
 
-    boolean isMandatory;
-    final int numberArguments;
-    final String name;
-    Set<String> aliasesSet;
-    final Consumer<List<String>> acListConsumer;
-    final String documentation;
-    List<String> conflicts;
+    private final boolean isMandatory;
+    private final int numberArguments;
+    private final String name;
+    private final Set<String> aliasesSet;
+    private final Consumer<List<String>> acListConsumer;
+    private final String documentation;
+    private final List<String> conflicts;
 
     /**
      * Ce contrcuteur est privé pour respecter le design pattern du Builder. Il ne faut surtout pas
@@ -29,16 +29,29 @@ public class Option {
         this.conflicts = builder.conflicts;
     }
 
+
+    public boolean isMandatory() {
+        return isMandatory;
+    }
+
+    public int getNumberArguments() {
+        return numberArguments;
+    }
+
     public String getName() {
         return name;
     }
 
-    public String haveDocumentation() {
-        return documentation;
+    public Set<String> getAliasesSet() {
+        return aliasesSet;
     }
 
-    public Set<String> getAliases() {
-        return aliasesSet;
+    public Consumer<List<String>> getAcListConsumer() {
+        return acListConsumer;
+    }
+
+    public String haveDocumentation() {
+        return documentation;
     }
 
     public List<String> getConflicts() {
@@ -54,13 +67,13 @@ public class Option {
 
     public static class OptionBuilder {
 
-        boolean isMandatory;
-        int numberArguments;
-        String name;
-        Set<String> aliasesSet;
-        Consumer<List<String>> acListConsumer;
-        String documentation = "";
-        List<String> conflicts;
+        private boolean isMandatory;
+        private int numberArguments;
+        private String name;
+        private final Set<String> aliasesSet;
+        private Consumer<List<String>> acListConsumer;
+        private String documentation = "";
+        private final List<String> conflicts;
 
 
         public OptionBuilder(String name, int numberArguments, Consumer<List<String>> acListConsumer) {

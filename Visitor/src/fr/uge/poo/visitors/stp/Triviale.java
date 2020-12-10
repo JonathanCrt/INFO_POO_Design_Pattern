@@ -17,7 +17,7 @@ public class Triviale {
 
             var answer = STPParser.parse(line);
 
-            if (!answer.isPresent()) {
+            if (answer.isEmpty()) {
                 System.out.println("Pas compris");
                 continue;
             }

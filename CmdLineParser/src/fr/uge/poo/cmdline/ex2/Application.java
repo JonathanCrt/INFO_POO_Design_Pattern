@@ -2,7 +2,7 @@ package fr.uge.poo.cmdline.ex2;
 
 public class Application {
 
-    static class PaintOptions{
+    static class PaintSettings {
         private boolean legacy=false;
         private boolean bordered=true;
         private int borderWidth;
@@ -52,14 +52,15 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        var options = new PaintOptions();
+        var options = new PaintSettings();
         String[] arguments={"-legacy","-no-borders", "-border-width","500","filename1","filename2"};
         var cmdParser = new CmdLineParser();
-        cmdParser.registerOption("-legacy", () -> options.setLegacy(true));
-        cmdParser.registerOption("-with-borders", () -> options.setBordered(true));
-        cmdParser.registerOption("-no-borders", () -> options.setBordered(false));
+        cmdParser.addFlag("-legacy", () -> options.setLegacy(true));
+        cmdParser.addFlag("-legacy", () -> options.setLegacy(true));
+        cmdParser.addFlag("-with-borders", () -> options.setBordered(true));
+        cmdParser.addFlag("-no-borders", () -> options.setBordered(false));
 
-        cmdParser.registerWithParameter("-border-width", size -> {
+        cmdParser.addOptionWithOneParameter("-border-width", size -> {
             options.setBorderWidth(Integer.parseInt(size));
         });
         var result = cmdParser.process(arguments);
