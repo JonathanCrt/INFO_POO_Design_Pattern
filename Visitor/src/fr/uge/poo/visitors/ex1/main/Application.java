@@ -1,6 +1,6 @@
-package fr.uge.poo.visitors.stp;
+package fr.uge.poo.visitors.ex1.main;
 
-import com.evilcorp.stp.*;
+import fr.uge.poo.visitors.ex1.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

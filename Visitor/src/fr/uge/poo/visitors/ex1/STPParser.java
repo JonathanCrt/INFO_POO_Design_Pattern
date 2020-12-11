@@ -1,4 +1,4 @@
-package com.evilcorp.stp;
+package fr.uge.poo.visitors.ex1;
 
 import java.util.Arrays;
 import java.util.Objects;

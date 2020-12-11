@@ -1,6 +1,6 @@
-package fr.uge.poo.visitors.expr;
+package fr.uge.poo.visitors.ex2;
 
-import fr.uge.poo.visitors.expr.visitors.ExprVisitor;
+import fr.uge.poo.visitors.ex2.visitors.ExprVisitor;
 
 import java.util.Objects;
 import java.util.function.IntBinaryOperator;

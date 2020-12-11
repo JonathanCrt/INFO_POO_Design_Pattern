@@ -1,6 +1,6 @@
-package com.evilcorp.stp.visitors;
+package fr.uge.poo.visitors.ex1.visitors;
 
-import com.evilcorp.stp.*;
+import fr.uge.poo.visitors.ex1.*;
 
 import java.time.LocalDateTime;
 import java.util.*;

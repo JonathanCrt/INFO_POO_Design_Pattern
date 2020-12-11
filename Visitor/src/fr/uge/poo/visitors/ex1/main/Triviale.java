@@ -1,8 +1,8 @@
-package fr.uge.poo.visitors.stp;
+package fr.uge.poo.visitors.ex1.main;
 
 
-import com.evilcorp.stp.HelloCmd;
-import com.evilcorp.stp.STPParser;
+import fr.uge.poo.visitors.ex1.HelloCmd;
+import fr.uge.poo.visitors.ex1.STPParser;
 
 import java.util.Scanner;
 

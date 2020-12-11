@@ -1,6 +1,6 @@
-package com.evilcorp.stp;
+package fr.uge.poo.visitors.ex1;
 
-import com.evilcorp.stp.visitors.STPCommandVisitor;
+import fr.uge.poo.visitors.ex1.visitors.STPCommandVisitor;
 
 public class HelloCmd implements STPCommand {
 

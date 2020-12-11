@@ -1,7 +1,7 @@
-package fr.uge.poo.visitors.expr;
+package fr.uge.poo.visitors.ex2;
 
-import fr.uge.poo.visitors.expr.visitors.EvalExprVisitor;
-import fr.uge.poo.visitors.expr.visitors.ToStringVisitor;
+import fr.uge.poo.visitors.ex2.visitors.EvalExprVisitor;
+import fr.uge.poo.visitors.ex2.visitors.ToStringVisitor;
 
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 public class Calculator {
     public static void main(String[] args) {
 
-        /*
         Iterator<String> iterator = Pattern.compile(" ").splitAsStream("+ * 4 + 1 1 + 2 3").iterator();
         EvalExprVisitor visitorContextEval = new EvalExprVisitor();
         Expr expr = Expr.parseExpr(iterator);
@@ -23,14 +22,6 @@ public class Calculator {
         expr2.accept(visitorContextToString);
         System.out.println(visitorContextToString);
 
-         */
-        ExprVisitor<Integer> evalVisitor = new ExprVisitor<>();
-        evalVisitor
-                .when(Value.class, value -> {
-                })
-                .when(BinOp.class, binOp -> {
-                });
-        evalVisitor.visit(expr);
 
     }
 }

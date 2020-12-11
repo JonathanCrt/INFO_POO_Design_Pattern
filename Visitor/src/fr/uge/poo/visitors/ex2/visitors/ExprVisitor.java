@@ -1,7 +1,7 @@
-package fr.uge.poo.visitors.expr.visitors;
+package fr.uge.poo.visitors.ex2.visitors;
 
-import fr.uge.poo.visitors.expr.BinOp;
-import fr.uge.poo.visitors.expr.Value;
+import fr.uge.poo.visitors.ex2.BinOp;
+import fr.uge.poo.visitors.ex2.Value;
 
 /**
  * toString -> Type generic ?
