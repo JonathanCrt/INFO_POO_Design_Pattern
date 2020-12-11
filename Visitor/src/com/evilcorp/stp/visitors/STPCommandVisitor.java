@@ -10,6 +10,4 @@ public interface STPCommandVisitor {
     void visit(StopTimerCmd stopTimerCmd);
 
     void visit(ElapsedTimeCmd elapsedTimeCmd);
-
-    void visit(QuickCmd chronoCommand);
 }
